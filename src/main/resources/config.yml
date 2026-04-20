@@ -1,0 +1,91 @@
+# ============================================================
+#  BierOfen 2.0 – Konfiguration
+# ============================================================
+
+settings:
+  max-level: 5
+  drop-on-death: true
+  prevent-stacking: true
+  allow-admin-free-upgrade: true
+  debug: false
+
+messages:
+  prefix: "§6BierOfen §8• §7"
+
+  no-permission: "§cDazu hast du keine Berechtigung."
+  not-a-furnace: "§cDas ist kein BierOfen."
+  not-enough-money: "§cDu hast nicht genug Geld."
+  max-level: "§eDieser Ofen ist bereits auf dem Max-Level."
+  upgrade-success: "§aDein Ofen wurde auf Level §e%level% §aupgegradet!"
+  admin-upgrade-success: "§aDer Ofen wurde kostenlos auf Level §e%level% §agesetzt."
+  furnace-placed: "§aBierOfen platziert! Level: §e%level%"
+  furnace-broken: "§cBierOfen abgebaut. Level gespeichert."
+  wiki-opened: "§aBierOfen-Wiki geöffnet."
+
+gui:
+
+  upgrade:
+    title: "§6BierOfen §8• §eUpgrade"
+    items:
+      level-display:
+        material: NETHER_STAR
+        name: "§eLevel: §6%level%"
+        lore:
+          - "§7Speed: §e%speed%%"
+          - "§7Drop: §e%drop%%"
+          - "§7Kosten: §e%cost%$"
+
+      upgrade-button:
+        material: EMERALD
+        name: "§aUpgrade durchführen"
+        lore:
+          - "§7Kosten: §e%cost%$"
+          - "§7Klicke zum Upgraden."
+
+      max-level:
+        material: BARRIER
+        name: "§cMax-Level erreicht"
+        lore:
+          - "§7Dieser Ofen kann nicht weiter verbessert werden."
+
+  admin:
+    title: "§6BierOfen §8• §cAdmin"
+    items:
+      placeholder:
+        material: BARRIER
+        name: "§cAdmin-Funktionen folgen"
+        lore:
+          - "§7In dieser Version nur Platzhalter."
+
+  wiki:
+    title: "§6BierOfen §8• §bWiki"
+    items:
+      info:
+        material: BOOK
+        name: "§eWas ist ein BierOfen?"
+        lore:
+          - "§7Ein Ofen, der gelevelt werden kann."
+          - "§7Höheres Level = mehr Speed & Drops."
+
+levels:
+
+  cost:
+    1: 100
+    2: 250
+    3: 500
+    4: 1000
+    5: 2000
+
+  speed:
+    1: 0
+    2: 5
+    3: 10
+    4: 20
+    5: 30
+
+  drop:
+    1: 0
+    2: 5
+    3: 10
+    4: 15
+    5: 25
