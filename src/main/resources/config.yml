@@ -2,6 +2,9 @@
 #  BierOfen 2.0 – Konfiguration
 # ============================================================
 
+# ------------------------------------------------------------
+#  Allgemeine Einstellungen
+# ------------------------------------------------------------
 settings:
   max-level: 5
   drop-on-death: true
@@ -9,6 +12,9 @@ settings:
   allow-admin-free-upgrade: true
   debug: false
 
+# ------------------------------------------------------------
+#  Nachrichten
+# ------------------------------------------------------------
 messages:
   prefix: "§6BierOfen §8• §7"
 
@@ -16,17 +22,24 @@ messages:
   not-a-furnace: "§cDas ist kein BierOfen."
   not-enough-money: "§cDu hast nicht genug Geld."
   max-level: "§eDieser Ofen ist bereits auf dem Max-Level."
+
   upgrade-success: "§aDein Ofen wurde auf Level §e%level% §aupgegradet!"
   admin-upgrade-success: "§aDer Ofen wurde kostenlos auf Level §e%level% §agesetzt."
+
   furnace-placed: "§aBierOfen platziert! Level: §e%level%"
   furnace-broken: "§cBierOfen abgebaut. Level gespeichert."
+
   wiki-opened: "§aBierOfen-Wiki geöffnet."
 
+# ------------------------------------------------------------
+#  GUI: Upgrade
+# ------------------------------------------------------------
 gui:
-
   upgrade:
     title: "§6BierOfen §8• §eUpgrade"
+
     items:
+
       level-display:
         material: NETHER_STAR
         name: "§eLevel: §6%level%"
@@ -48,8 +61,12 @@ gui:
         lore:
           - "§7Dieser Ofen kann nicht weiter verbessert werden."
 
+# ------------------------------------------------------------
+#  GUI: Admin
+# ------------------------------------------------------------
   admin:
     title: "§6BierOfen §8• §cAdmin"
+
     items:
       placeholder:
         material: BARRIER
@@ -57,8 +74,12 @@ gui:
         lore:
           - "§7In dieser Version nur Platzhalter."
 
+# ------------------------------------------------------------
+#  GUI: Wiki
+# ------------------------------------------------------------
   wiki:
     title: "§6BierOfen §8• §bWiki"
+
     items:
       info:
         material: BOOK
@@ -67,6 +88,9 @@ gui:
           - "§7Ein Ofen, der gelevelt werden kann."
           - "§7Höheres Level = mehr Speed & Drops."
 
+# ------------------------------------------------------------
+#  Level Einstellungen
+# ------------------------------------------------------------
 levels:
 
   cost:
