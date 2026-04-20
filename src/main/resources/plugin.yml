@@ -1,0 +1,32 @@
+name: BierOfen
+main: de.bierrang.plugin.BierOfen
+version: 2.0.0
+api-version: 1.20
+author: RicoDessau
+website: https://biernetzwerk.de
+depend: [Vault]
+load: POSTWORLD
+
+commands:
+  bierofen:
+    description: Öffnet die BierOfen-Upgrade-GUI.
+    usage: /bierofen
+    permission: bierofen.use
+
+  bieradmin:
+    description: Öffnet die BierOfen-Admin-GUI.
+    usage: /bieradmin
+    permission: bierofen.admin
+
+  bierwiki:
+    description: Öffnet die BierOfen-Wiki-GUI.
+    usage: /bierwiki
+    permission: bierofen.wiki
+
+permissions:
+  bierofen.use:
+    default: true
+  bierofen.admin:
+    default: op
+  bierofen.wiki:
+    default: true
