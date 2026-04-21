@@ -10,16 +10,13 @@
     <packaging>jar</packaging>
 
     <name>BierOfen</name>
-    <description>Custom Furnace Upgrade Plugin</description>
 
-    <!-- Java 17 -->
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <!-- Paper Repository -->
     <repositories>
         <repository>
             <id>papermc-repo</id>
@@ -27,7 +24,6 @@
         </repository>
     </repositories>
 
-    <!-- Dependencies -->
     <dependencies>
 
         <!-- Paper API -->
@@ -38,21 +34,11 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Vault API (falls du Economy nutzt) -->
-        <dependency>
-            <groupId>com.github.MilkBowl</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>1.7</version>
-            <scope>provided</scope>
-        </dependency>
-
     </dependencies>
 
-    <!-- Build -->
     <build>
         <plugins>
 
-            <!-- Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -61,24 +47,6 @@
                     <source>17</source>
                     <target>17</target>
                 </configuration>
-            </plugin>
-
-            <!-- Shade Plugin (falls später benötigt) -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.4.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
 
         </plugins>
