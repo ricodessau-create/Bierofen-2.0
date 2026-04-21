@@ -1,11 +1,10 @@
 package de.bierofen.listener;
 
 import de.bierofen.BierOfen;
-import de.bierofen.manager.FurnaceManager;
+import de.bierofen.furnace.FurnaceManager;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
@@ -27,7 +26,9 @@ public class FurnaceListener implements Listener {
         double speedBonus = manager.getSpeedBonus(level); // z.B. 1.20 für 120%
 
         Furnace furnace = (Furnace) block.getState();
-        Material input = furnace.getInventory().getSmelting().getType();
+        Material input = furnace.getInventory().getSmelting() != null
+                ? furnace.getInventory().getSmelting().getType()
+                : Material.AIR;
 
         double multiplier = 1.0;
 
@@ -38,10 +39,10 @@ public class FurnaceListener implements Listener {
 
         // SMOKER → Essen schneller, Rest langsamer
         if (block.getType() == Material.SMOKER) {
-            if (isFood(input)) {
-                multiplier = 2.0 + speedBonus; // Essen schneller
+            if (input.isEdible()) {
+                multiplier = 2.0 + speedBonus;
             } else {
-                multiplier = 0.5; // Debuff
+                multiplier = 0.5;
             }
         }
 
@@ -50,7 +51,7 @@ public class FurnaceListener implements Listener {
             if (isOreOrRaw(input)) {
                 multiplier = 2.0 + speedBonus;
             } else {
-                multiplier = 0.5; // Debuff
+                multiplier = 0.5;
             }
         }
 
@@ -63,7 +64,6 @@ public class FurnaceListener implements Listener {
         Block block = e.getBlock();
         int level = manager.getLevel(block);
 
-        // Loot Chance
         int bonus = manager.getBonusDrops(level);
 
         if (bonus > 0) {
@@ -71,13 +71,11 @@ public class FurnaceListener implements Listener {
         }
     }
 
-    private boolean isFood(Material m) {
-        return m.isEdible();
-    }
-
     private boolean isOreOrRaw(Material m) {
-        return m.name().endsWith("_ORE") ||
-               m.name().startsWith("RAW_") ||
-               m.name().endsWith("_INGOT");
+        return m.name().endsWith("_ORE")
+                || m.name().startsWith("RAW_")
+                || m == Material.RAW_COPPER
+                || m == Material.RAW_IRON
+                || m == Material.RAW_GOLD;
     }
 }
