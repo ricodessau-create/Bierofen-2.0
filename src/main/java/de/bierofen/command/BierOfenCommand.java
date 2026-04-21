@@ -2,7 +2,7 @@ package de.bierofen.command;
 
 import de.bierofen.gui.AdminGUI;
 import de.bierofen.gui.UpgradeGUI;
-import de.bierofen.gui.WWikiGUI;
+import de.bierofen.gui.WikiGUI;
 import de.bierofen.upgrade.FurnaceContext;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -26,6 +26,10 @@ public class BierOfenCommand implements CommandExecutor {
 
             case "bierofen":
                 Block last = FurnaceContext.getLastFurnace(p);
+                if (last == null) {
+                    p.sendMessage("§cBitte klicke zuerst einen Ofen an.");
+                    return true;
+                }
                 new UpgradeGUI(last).open(p);
                 return true;
 
@@ -34,7 +38,7 @@ public class BierOfenCommand implements CommandExecutor {
                 return true;
 
             case "bierwiki":
-                new WWikiGUI().open(p);
+                new WikiGUI().open(p);
                 return true;
 
             default:
