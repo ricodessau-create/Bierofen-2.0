@@ -1,9 +1,8 @@
-package de.bierofen.listener;
+package de.bierrang.plugin.listener;
 
-import de.bierofen.BierOfen;
-import de.bierofen.furnace.FurnaceManager;
-import de.bierofen.gui.AdminGUI;
-import de.bierofen.upgrade.FurnaceContext;
+import de.bierrang.plugin.BierOfen;
+import de.bierrang.plugin.furnace.FurnaceManager;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,44 +11,38 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class AdminClickListener implements Listener {
 
+    private final FurnaceManager fm;
+
+    public AdminClickListener() {
+        this.fm = BierOfen.getInstance().getFurnaceManager();
+    }
+
+    private boolean isValidFurnace(Material type) {
+        return type == Material.FURNACE ||
+               type == Material.BLAST_FURNACE ||
+               type == Material.SMOKER;
+    }
+
     @EventHandler
     public void onClick(InventoryClickEvent e) {
-        if (!(e.getInventory().getHolder() instanceof AdminGUI)) return;
+        if (e.getClickedInventory() == null) return;
+        if (!(e.getWhoClicked() instanceof Player player)) return;
 
-        e.setCancelled(true);
-
-        Player p = (Player) e.getWhoClicked();
-        Block furnace = FurnaceContext.getLastFurnace(p);
-
-        if (furnace == null) {
-            p.sendMessage("§cKein Ofen ausgewählt.");
+        Block block = BierOfen.getInstance().getStorageManager().getSelectedFurnace(player);
+        if (block == null) {
+            player.sendMessage("§cBitte klicke zuerst einen Ofen an.");
             return;
         }
 
-        FurnaceManager fm = BierOfen.getInstance().getFurnaceManager();
-        int level = fm.getLevel(furnace);
-
-        switch (e.getSlot()) {
-            case 11:
-                fm.setLevel(furnace, level + 1);
-                p.sendMessage("§aLevel erhöht auf §e" + (level + 1));
-                break;
-
-            case 15:
-                if (level > 1) {
-                    fm.setLevel(furnace, level - 1);
-                    p.sendMessage("§cLevel verringert auf §e" + (level - 1));
-                } else {
-                    p.sendMessage("§cLevel kann nicht unter 1 fallen.");
-                }
-                break;
-
-            case 13:
-                fm.setLevel(furnace, 1);
-                p.sendMessage("§4Ofen zurückgesetzt auf Level 1.");
-                break;
+        Material type = block.getType();
+        if (!isValidFurnace(type)) {
+            player.sendMessage("§cDas ist kein gültiger Ofen.");
+            return;
         }
 
-        p.closeInventory();
+        int newLevel = 1; // Beispiel – je nach GUI
+        fm.setLevel(block, newLevel);
+
+        player.sendMessage("§aAdmin: Level gesetzt auf " + newLevel);
     }
 }
