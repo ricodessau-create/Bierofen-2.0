@@ -27,12 +27,9 @@ public class BierOfen extends JavaPlugin {
         storageManager = new StorageManager(getDataFolder());
         furnaceManager = new FurnaceManager(storageManager);
 
-        if (getCommand("bierofen") != null)
-            getCommand("bierofen").setExecutor(new BierOfenCommand());
-        if (getCommand("bieradmin") != null)
-            getCommand("bieradmin").setExecutor(new BierOfenCommand());
-        if (getCommand("bierwiki") != null)
-            getCommand("bierwiki").setExecutor(new BierOfenCommand());
+        getCommand("bierofen").setExecutor(new BierOfenCommand());
+        getCommand("bieradmin").setExecutor(new BierOfenCommand());
+        getCommand("bierwiki").setExecutor(new BierOfenCommand());
 
         Bukkit.getPluginManager().registerEvents(new GuiClickListener(), this);
         Bukkit.getPluginManager().registerEvents(new FurnaceListener(), this);
