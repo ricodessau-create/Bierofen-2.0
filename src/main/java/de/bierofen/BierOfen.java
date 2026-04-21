@@ -5,6 +5,8 @@ import de.bierofen.listener.GuiClickListener;
 import de.bierofen.listener.FurnaceListener;
 import de.bierofen.listener.UpgradeClickListener;
 import de.bierofen.listener.AdminClickListener;
+import de.bierofen.storage.StorageManager;
+import de.bierofen.furnace.FurnaceManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -12,11 +14,18 @@ public class BierOfen extends JavaPlugin {
 
     private static BierOfen instance;
 
+    private StorageManager storageManager;
+    private FurnaceManager furnaceManager;
+
     @Override
     public void onEnable() {
         instance = this;
 
         saveDefaultConfig();
+
+        // Manager erstellen
+        storageManager = new StorageManager(getDataFolder());
+        furnaceManager = new FurnaceManager(storageManager);
 
         // Commands
         getCommand("bierofen").setExecutor(new BierOfenCommand());
@@ -39,5 +48,13 @@ public class BierOfen extends JavaPlugin {
 
     public static BierOfen getInstance() {
         return instance;
+    }
+
+    public StorageManager getStorageManager() {
+        return storageManager;
+    }
+
+    public FurnaceManager getFurnaceManager() {
+        return furnaceManager;
     }
 }
