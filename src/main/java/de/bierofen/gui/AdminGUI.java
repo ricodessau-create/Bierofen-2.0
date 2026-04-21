@@ -17,28 +17,17 @@ public class AdminGUI implements InventoryHolder {
 
     public void open(Player p) {
         this.inv = Bukkit.createInventory(this, 27,
-                BierOfen.getInstance().getConfig().getString("gui.admin.title"));
+                BierOfen.getInstance().getConfig().getString("gui.admin.title", "BierOfen Admin"));
 
-        // Level +1
-        inv.setItem(11, createItem(Material.EMERALD, "§aLevel +1",
-                "§7Erhöht das Level des Ofens um 1"));
-
-        // Level -1
-        inv.setItem(15, createItem(Material.REDSTONE, "§cLevel -1",
-                "§7Verringert das Level des Ofens um 1"));
-
-        // Reset
-        inv.setItem(13, createItem(Material.BARRIER, "§4Reset",
-                "§7Setzt den Ofen auf Level 1 zurück"));
-
-        // Info
-        inv.setItem(22, createItem(Material.BOOK, "§eInfo",
-                "§7Admin-Werkzeuge für BierOfen"));
+        inv.setItem(11, create(Material.EMERALD, "§aLevel +1", "§7Erhöht das Level des Ofens um 1."));
+        inv.setItem(15, create(Material.REDSTONE, "§cLevel -1", "§7Verringert das Level des Ofens um 1."));
+        inv.setItem(13, create(Material.BARRIER, "§4Reset", "§7Setzt den Ofen auf Level 1 zurück."));
+        inv.setItem(22, create(Material.BOOK, "§eInfo", "§7Admin-Werkzeuge für BierOfen."));
 
         p.openInventory(inv);
     }
 
-    private ItemStack createItem(Material m, String name, String... lore) {
+    private ItemStack create(Material m, String name, String... lore) {
         ItemStack i = new ItemStack(m);
         ItemMeta im = i.getItemMeta();
         im.setDisplayName(name);
