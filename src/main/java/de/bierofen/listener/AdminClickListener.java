@@ -18,10 +18,9 @@ public class AdminClickListener implements Listener {
 
         e.setCancelled(true);
 
-        if (!(e.getWhoClicked() instanceof Player)) return;
         Player p = (Player) e.getWhoClicked();
-
         Block furnace = FurnaceContext.getLastFurnace(p);
+
         if (furnace == null) {
             p.sendMessage("§cKein Ofen ausgewählt.");
             return;
@@ -31,12 +30,12 @@ public class AdminClickListener implements Listener {
         int level = fm.getLevel(furnace);
 
         switch (e.getSlot()) {
-            case 11: // +1
+            case 11:
                 fm.setLevel(furnace, level + 1);
                 p.sendMessage("§aLevel erhöht auf §e" + (level + 1));
                 break;
 
-            case 15: // -1
+            case 15:
                 if (level > 1) {
                     fm.setLevel(furnace, level - 1);
                     p.sendMessage("§cLevel verringert auf §e" + (level - 1));
@@ -45,12 +44,9 @@ public class AdminClickListener implements Listener {
                 }
                 break;
 
-            case 13: // Reset
+            case 13:
                 fm.setLevel(furnace, 1);
                 p.sendMessage("§4Ofen zurückgesetzt auf Level 1.");
-                break;
-
-            default:
                 break;
         }
 
