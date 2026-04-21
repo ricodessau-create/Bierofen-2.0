@@ -24,25 +24,23 @@ public class UpgradeGUI implements InventoryHolder {
 
     public void open(Player p) {
         this.inv = Bukkit.createInventory(this, 27,
-                BierOfen.getInstance().getConfig().getString("gui.upgrade.title"));
+                BierOfen.getInstance().getConfig().getString("gui.upgrade.title", "BierOfen Upgrade"));
 
         FurnaceManager fm = BierOfen.getInstance().getFurnaceManager();
         int level = fm.getLevel(furnace);
 
-        // Level-Anzeige
         ItemStack levelItem = new ItemStack(Material.NETHER_STAR);
         ItemMeta lm = levelItem.getItemMeta();
         lm.setDisplayName("§eLevel: §6" + level);
         lm.setLore(Arrays.asList(
-                "§7Speed: §e" + BierOfen.getInstance().getConfig().getInt("levels.speed." + level) + "%",
-                "§7Drop: §e" + BierOfen.getInstance().getConfig().getInt("levels.drop." + level) + "%"
+                "§7Speed: §e" + BierOfen.getInstance().getConfig().getInt("levels.speed." + level, 0) + "%",
+                "§7Drop: §e" + BierOfen.getInstance().getConfig().getInt("levels.drop." + level, 0) + "%"
         ));
         levelItem.setItemMeta(lm);
         inv.setItem(13, levelItem);
 
-        // Upgrade-Button
-        int nextLevel = level + 1;
-        int cost = BierOfen.getInstance().getConfig().getInt("levels.cost." + nextLevel);
+        int next = level + 1;
+        int cost = BierOfen.getInstance().getConfig().getInt("levels.cost." + next, 0);
 
         ItemStack upgrade = new ItemStack(Material.EMERALD);
         ItemMeta um = upgrade.getItemMeta();
@@ -54,7 +52,6 @@ public class UpgradeGUI implements InventoryHolder {
         upgrade.setItemMeta(um);
         inv.setItem(15, upgrade);
 
-        // Max-Level
         if (fm.isMaxLevel(level)) {
             ItemStack max = new ItemStack(Material.BARRIER);
             ItemMeta mm = max.getItemMeta();
