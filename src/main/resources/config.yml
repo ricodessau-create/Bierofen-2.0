@@ -1,27 +1,12 @@
-# ============================================================
-#  BierOfen 2.0 – Konfiguration
-#  Sauber strukturiert, logisch gruppiert, final.
-# ============================================================
-
-
 # ------------------------------------------------------------
 #  ALLGEMEINE EINSTELLUNGEN
 # ------------------------------------------------------------
 settings:
 
-  # Maximales Level, das ein BierOfen erreichen kann
   max-level: 5
-
-  # Soll der Ofen beim Tod des Spielers droppen?
   drop-on-death: true
-
-  # Verhindert, dass mehrere BierÖfen stacken
   prevent-stacking: true
-
-  # Admins können kostenlos upgraden
   allow-admin-free-upgrade: true
-
-  # Debug-Ausgaben in der Konsole
   debug: false
 
 
@@ -69,7 +54,9 @@ gui:
 # ------------------------------------------------------------
 levels:
 
-  # Kosten pro Level
+  # ----------------------------------------------------------
+  #  KOSTEN PRO LEVEL
+  # ----------------------------------------------------------
   cost:
     1: 100
     2: 250
@@ -77,7 +64,17 @@ levels:
     4: 1000
     5: 2000
 
-  # Geschwindigkeitsbonus pro Level (in %)
+  # ----------------------------------------------------------
+  #  SPEED-BONUS
+  #
+  #  Bedeutet:
+  #    Wie viel schneller der Ofen brennt.
+  #
+  #  Beispiel:
+  #    Level 1 → 0% schneller (normal)
+  #    Level 2 → 5% schneller
+  #    Level 3 → 10% schneller
+  # ----------------------------------------------------------
   speed:
     1: 0
     2: 5
@@ -85,7 +82,25 @@ levels:
     4: 20
     5: 30
 
-  # Drop-Bonus pro Level (in %)
+  # ----------------------------------------------------------
+  #  DROP-BONUS
+  #
+  #  Bedeutet:
+  #    Chance auf BONUS-Drops beim Schmelzen von Erzen.
+  #
+  #  WICHTIG:
+  #    Wenn der Bonus triggert, gibt es NICHT nur 1 Item,
+  #    sondern ZUFÄLLIG zwischen **1 und 4 Extra-Drops**.
+  #
+  #  Beispiel:
+  #    Level 1 → 0% Chance
+  #    Level 2 → 5% Chance auf +1 bis +4 Items
+  #    Level 3 → 10% Chance auf +1 bis +4 Items
+  #
+  #  Keine Dupes:
+  #    Es wird nur das Ergebnis-Item vervielfacht,
+  #    niemals der Block selbst.
+  # ----------------------------------------------------------
   drop:
     1: 0
     2: 5
