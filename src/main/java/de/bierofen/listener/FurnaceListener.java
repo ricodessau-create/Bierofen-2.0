@@ -1,68 +1,83 @@
 package de.bierofen.listener;
 
 import de.bierofen.BierOfen;
-import de.bierofen.furnace.FurnaceManager;
-import de.bierofen.upgrade.FurnaceContext;
+import de.bierofen.manager.FurnaceManager;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Furnace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
+import org.bukkit.event.inventory.FurnaceBurnEvent;
+import org.bukkit.event.inventory.FurnaceSmeltEvent;
 
 public class FurnaceListener implements Listener {
 
-    @EventHandler
-    public void onInteract(PlayerInteractEvent e) {
-        if (e.getClickedBlock() == null) return;
+    private final FurnaceManager manager;
 
-        Block b = e.getClickedBlock();
-        Material type = b.getType();
-
-        if (type == Material.FURNACE || type == Material.BLAST_FURNACE || type == Material.SMOKER) {
-            FurnaceContext.setLastFurnace(e.getPlayer(), b);
-        }
+    public FurnaceListener() {
+        this.manager = BierOfen.getInstance().getFurnaceManager();
     }
 
     @EventHandler
-    public void onOpen(InventoryOpenEvent e) {
-        Inventory inv = e.getInventory();
-        Player p = (Player) e.getPlayer();
+    public void onBurn(FurnaceBurnEvent e) {
+        Block block = e.getBlock();
+        int level = manager.getLevel(block);
 
-        switch (inv.getType()) {
-            case FURNACE:
-            case BLAST_FURNACE:
-            case SMOKER:
-                break;
-            default:
-                return;
+        double speedBonus = manager.getSpeedBonus(level); // z.B. 1.20 für 120%
+
+        Furnace furnace = (Furnace) block.getState();
+        Material input = furnace.getInventory().getSmelting().getType();
+
+        double multiplier = 1.0;
+
+        // NORMALER OFEN
+        if (block.getType() == Material.FURNACE) {
+            multiplier = 1.0 + speedBonus;
         }
 
-        Block furnace = FurnaceContext.getLastFurnace(p);
-        if (furnace == null) return;
+        // SMOKER → Essen schneller, Rest langsamer
+        if (block.getType() == Material.SMOKER) {
+            if (isFood(input)) {
+                multiplier = 2.0 + speedBonus; // Essen schneller
+            } else {
+                multiplier = 0.5; // Debuff
+            }
+        }
 
-        FurnaceManager fm = BierOfen.getInstance().getFurnaceManager();
-        int level = fm.getLevel(furnace);
+        // BLAST FURNACE → Erze & Raw schneller, Essen langsamer
+        if (block.getType() == Material.BLAST_FURNACE) {
+            if (isOreOrRaw(input)) {
+                multiplier = 2.0 + speedBonus;
+            } else {
+                multiplier = 0.5; // Debuff
+            }
+        }
 
-        String stars = generateStars(level);
-
-        InventoryView view = p.getOpenInventory();
-        view.setTitle(stars + " BierOfen");
+        int newBurnTime = (int) (e.getBurnTime() * multiplier);
+        e.setBurnTime(newBurnTime);
     }
 
-    private String generateStars(int level) {
-        if (level < 1) level = 1;
-        if (level > 5) level = 5;
+    @EventHandler
+    public void onSmelt(FurnaceSmeltEvent e) {
+        Block block = e.getBlock();
+        int level = manager.getLevel(block);
 
-        StringBuilder sb = new StringBuilder("[");
-        for (int i = 1; i <= 5; i++) {
-            if (i <= level) sb.append("★");
-            else sb.append("☆");
+        // Loot Chance
+        int bonus = manager.getBonusDrops(level);
+
+        if (bonus > 0) {
+            e.setResult(new org.bukkit.inventory.ItemStack(e.getResult().getType(), 1 + bonus));
         }
-        sb.append("] ");
-        return sb.toString();
+    }
+
+    private boolean isFood(Material m) {
+        return m.isEdible();
+    }
+
+    private boolean isOreOrRaw(Material m) {
+        return m.name().endsWith("_ORE") ||
+               m.name().startsWith("RAW_") ||
+               m.name().endsWith("_INGOT");
     }
 }
