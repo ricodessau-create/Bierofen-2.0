@@ -1,0 +1,30 @@
+package de.bierofen.furnace;
+
+import de.bierofen.BierOfen;
+import de.bierofen.storage.StorageManager;
+import org.bukkit.block.Block;
+
+public class FurnaceManager {
+
+    private final StorageManager storage;
+
+    public FurnaceManager(StorageManager storage) {
+        this.storage = storage;
+    }
+
+    public int getLevel(Block block) {
+        return storage.getLevel(block);
+    }
+
+    public void setLevel(Block block, int level) {
+        storage.setLevel(block, level);
+    }
+
+    public boolean exists(Block block) {
+        return storage.exists(block);
+    }
+
+    public boolean isMaxLevel(int level) {
+        return level >= BierOfen.getInstance().getConfig().getInt("settings.max-level");
+    }
+}
