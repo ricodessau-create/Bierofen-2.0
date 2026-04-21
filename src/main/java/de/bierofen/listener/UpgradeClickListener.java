@@ -1,9 +1,12 @@
 package de.bierofen.listener;
 
 import de.bierofen.BierOfen;
+import de.bierofen.furnace.FurnaceManager;
 import de.bierofen.gui.UpgradeGUI;
 import de.bierofen.upgrade.FurnaceContext;
-import de.bierofen.upgrade.UpgradeHandler;
+
+import net.milkbowl.vault.economy.Economy;
+
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,38 +15,58 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class UpgradeClickListener implements Listener {
 
-    private final UpgradeHandler handler = new UpgradeHandler();
-
     @EventHandler
     public void onClick(InventoryClickEvent e) {
+
         if (!(e.getInventory().getHolder() instanceof UpgradeGUI)) return;
 
         e.setCancelled(true);
 
         Player p = (Player) e.getWhoClicked();
-
-        if (e.getSlot() != 15) return;
-
         Block furnace = FurnaceContext.getLastFurnace(p);
 
         if (furnace == null) {
-            p.sendMessage(BierOfen.getInstance().getConfig().getString("messages.not-a-furnace"));
+            p.sendMessage("§cKein Ofen ausgewählt.");
             return;
         }
 
-        boolean success = handler.upgrade(furnace);
+        FurnaceManager fm = BierOfen.getInstance().getFurnaceManager();
+        int level = fm.getLevel(furnace);
 
-        if (!success) {
-            p.sendMessage(BierOfen.getInstance().getConfig().getString("messages.max-level"));
+        int next = level + 1;
+
+        // Max-Level prüfen
+        if (next > BierOfen.getInstance().getConfig().getInt("settings.max-level")) {
+            p.sendMessage("§eDieser Ofen ist bereits auf dem Max-Level.");
             return;
         }
 
-        int newLevel = BierOfen.getInstance().getFurnaceManager().getLevel(furnace);
+        // Kosten aus Config
+        int cost = BierOfen.getInstance().getConfig().getInt("levels.cost." + next);
 
-        p.sendMessage(
-                BierOfen.getInstance().getConfig().getString("messages.upgrade-success")
-                        .replace("%level%", String.valueOf(newLevel))
-        );
+        // Admin kostenlos?
+        boolean adminFree = BierOfen.getInstance().getConfig().getBoolean("settings.allow-admin-free-upgrade")
+                && p.hasPermission("bierofen.admin");
+
+        // Economy vorhanden?
+        Economy econ = BierOfen.econ;
+
+        if (!adminFree && econ != null) {
+
+            // Geld prüfen
+            if (!econ.has(p, cost)) {
+                p.sendMessage("§cDu hast nicht genug Geld.");
+                return;
+            }
+
+            // Geld abziehen
+            econ.withdrawPlayer(p, cost);
+        }
+
+        // Level erhöhen
+        fm.setLevel(furnace, next);
+
+        p.sendMessage("§aDein Ofen wurde auf Level §e" + next + " §aupgegradet!");
 
         p.closeInventory();
     }
