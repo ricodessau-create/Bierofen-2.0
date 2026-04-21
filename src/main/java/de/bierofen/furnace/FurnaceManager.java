@@ -1,25 +1,24 @@
-package de.bierofen.manager;
+package de.bierofen.furnace;
 
 import de.bierofen.BierOfen;
+import de.bierofen.storage.StorageManager;
 import org.bukkit.block.Block;
 
 import java.util.Random;
 
 public class FurnaceManager {
 
+    private final StorageManager storage;
     private final BierOfen plugin;
     private final Random rnd = new Random();
 
-    public FurnaceManager(BierOfen plugin) {
-        this.plugin = plugin;
+    public FurnaceManager(StorageManager storage) {
+        this.storage = storage;
+        this.plugin = BierOfen.getInstance();
     }
 
     public int getLevel(Block block) {
-        return block.getPersistentDataContainer().getOrDefault(
-                plugin.key("level"),
-                org.bukkit.persistence.PersistentDataType.INTEGER,
-                1
-        );
+        return storage.getLevel(block);
     }
 
     public double getSpeedBonus(int level) {
