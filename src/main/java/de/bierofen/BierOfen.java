@@ -5,6 +5,7 @@ import de.bierofen.listener.GuiClickListener;
 import de.bierofen.listener.FurnaceListener;
 import de.bierofen.listener.UpgradeClickListener;
 import de.bierofen.listener.AdminClickListener;
+import de.bierofen.listener.WikiClickListener;
 import de.bierofen.storage.StorageManager;
 import de.bierofen.furnace.FurnaceManager;
 import org.bukkit.Bukkit;
@@ -23,27 +24,28 @@ public class BierOfen extends JavaPlugin {
 
         saveDefaultConfig();
 
-        // Manager erstellen
         storageManager = new StorageManager(getDataFolder());
         furnaceManager = new FurnaceManager(storageManager);
 
-        // Commands
-        getCommand("bierofen").setExecutor(new BierOfenCommand());
-        getCommand("bieradmin").setExecutor(new BierOfenCommand());
-        getCommand("bierwiki").setExecutor(new BierOfenCommand());
+        if (getCommand("bierofen") != null)
+            getCommand("bierofen").setExecutor(new BierOfenCommand());
+        if (getCommand("bieradmin") != null)
+            getCommand("bieradmin").setExecutor(new BierOfenCommand());
+        if (getCommand("bierwiki") != null)
+            getCommand("bierwiki").setExecutor(new BierOfenCommand());
 
-        // Listener
         Bukkit.getPluginManager().registerEvents(new GuiClickListener(), this);
         Bukkit.getPluginManager().registerEvents(new FurnaceListener(), this);
         Bukkit.getPluginManager().registerEvents(new UpgradeClickListener(), this);
         Bukkit.getPluginManager().registerEvents(new AdminClickListener(), this);
+        Bukkit.getPluginManager().registerEvents(new WikiClickListener(), this);
 
-        getLogger().info("BierOfen 2.0 wurde aktiviert.");
+        getLogger().info("BierOfen aktiviert.");
     }
 
     @Override
     public void onDisable() {
-        getLogger().info("BierOfen 2.0 wurde deaktiviert.");
+        getLogger().info("BierOfen deaktiviert.");
     }
 
     public static BierOfen getInstance() {
