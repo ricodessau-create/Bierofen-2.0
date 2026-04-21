@@ -17,17 +17,38 @@ public class FurnaceManager {
         this.plugin = BierOfen.getInstance();
     }
 
+    // ------------------------------------------------------------
+    // LEVEL SYSTEM
+    // ------------------------------------------------------------
+
     public int getLevel(Block block) {
         return storage.getLevel(block);
     }
 
+    public void setLevel(Block block, int level) {
+        storage.setLevel(block, level);
+    }
+
+    public boolean isMaxLevel(int level) {
+        int max = plugin.getConfig().getInt("max-level", 5);
+        return level >= max;
+    }
+
+    // ------------------------------------------------------------
+    // SPEED BONUS
+    // ------------------------------------------------------------
+
     public double getSpeedBonus(int level) {
-        int value = plugin.getConfig().getInt("speed." + level);
+        int value = plugin.getConfig().getInt("speed." + level, 0);
         return value / 100.0;
     }
 
+    // ------------------------------------------------------------
+    // LOOT BONUS
+    // ------------------------------------------------------------
+
     public int getBonusDrops(int level) {
-        int chance = plugin.getConfig().getInt("drop." + level);
+        int chance = plugin.getConfig().getInt("drop." + level, 0);
 
         if (chance == 0) return 0;
 
