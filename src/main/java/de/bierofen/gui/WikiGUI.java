@@ -17,24 +17,21 @@ public class WikiGUI implements InventoryHolder {
 
     public void open(Player p) {
         this.inv = Bukkit.createInventory(this, 27,
-                BierOfen.getInstance().getConfig().getString("gui.wiki.title"));
+                BierOfen.getInstance().getConfig().getString("gui.wiki.title", "BierOfen Wiki"));
 
-        inv.setItem(11, createItem(Material.PAPER, "§eLevel-Kosten",
+        inv.setItem(11, create(Material.PAPER, "§eLevel-Kosten",
                 "§7Zeigt die Kosten pro Level an."));
-
-        inv.setItem(13, createItem(Material.FURNACE, "§eSpeed-Bonus",
+        inv.setItem(13, create(Material.FURNACE, "§eSpeed-Bonus",
                 "§7Zeigt den Geschwindigkeitsbonus pro Level."));
-
-        inv.setItem(15, createItem(Material.IRON_INGOT, "§eDrop-Bonus",
+        inv.setItem(15, create(Material.IRON_INGOT, "§eDrop-Bonus",
                 "§7Zeigt den Drop-Bonus pro Level."));
-
-        inv.setItem(22, createItem(Material.BOOK, "§bBierOfen-Wiki",
+        inv.setItem(22, create(Material.BOOK, "§bBierOfen-Wiki",
                 "§7Alle Infos über das BierOfen-System."));
 
         p.openInventory(inv);
     }
 
-    private ItemStack createItem(Material m, String name, String... lore) {
+    private ItemStack create(Material m, String name, String... lore) {
         ItemStack i = new ItemStack(m);
         ItemMeta im = i.getItemMeta();
         im.setDisplayName(name);
