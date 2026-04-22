@@ -1,7 +1,7 @@
-package de.bierrang.plugin.listener;
+package de.bierofen.listener;
 
-import de.bierrang.plugin.BierOfen;
-import de.bierrang.plugin.furnace.FurnaceManager;
+import de.bierofen.BierOfen;
+import de.bierofen.furnace.FurnaceManager;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
