@@ -1,7 +1,7 @@
-package de.bierrang.plugin.listener;
+package de.bierofen.listener;
 
-import de.bierrang.plugin.BierOfen;
-import de.bierrang.plugin.furnace.FurnaceManager;
+import de.bierofen.BierOfen;
+import de.bierofen.furnace.FurnaceManager;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
@@ -41,27 +41,18 @@ public class FurnaceListener implements Listener {
 
         double multiplier = 1.0;
 
-        // NORMALER OFEN
         if (type == Material.FURNACE) {
             multiplier = 1.0 + speedBonus;
         }
 
-        // SMOKER
         if (type == Material.SMOKER) {
-            if (input.isEdible()) {
-                multiplier = 2.0 + speedBonus;
-            } else {
-                multiplier = 0.5;
-            }
+            if (input.isEdible()) multiplier = 2.0 + speedBonus;
+            else multiplier = 0.5;
         }
 
-        // BLAST FURNACE
         if (type == Material.BLAST_FURNACE) {
-            if (isOreOrRaw(input)) {
-                multiplier = 2.0 + speedBonus;
-            } else {
-                multiplier = 0.5;
-            }
+            if (isOreOrRaw(input)) multiplier = 2.0 + speedBonus;
+            else multiplier = 0.5;
         }
 
         e.setBurnTime((int) (e.getBurnTime() * multiplier));
