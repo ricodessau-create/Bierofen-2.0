@@ -4,6 +4,7 @@ import de.bierofen.util.BlockUtil;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +17,9 @@ public class StorageManager {
     private FileConfiguration cfg;
 
     private final Map<String, Integer> levels = new HashMap<>();
+
+    // NEU: ausgewählter Ofen pro Spieler
+    private final Map<Player, Block> selectedFurnace = new HashMap<>();
 
     public StorageManager(File dataFolder) {
         this.file = new File(dataFolder, "storage.yml");
@@ -47,6 +51,7 @@ public class StorageManager {
         try { cfg.save(file); } catch (IOException ignored) {}
     }
 
+    // LEVEL SYSTEM
     public int getLevel(Block block) {
         return levels.getOrDefault(BlockUtil.toKey(block), 1);
     }
@@ -63,5 +68,20 @@ public class StorageManager {
     public void remove(Block block) {
         levels.remove(BlockUtil.toKey(block));
         save();
+    }
+
+    // NEU: ausgewählten Ofen speichern
+    public void setSelectedFurnace(Player player, Block block) {
+        selectedFurnace.put(player, block);
+    }
+
+    // NEU: ausgewählten Ofen abrufen
+    public Block getSelectedFurnace(Player player) {
+        return selectedFurnace.get(player);
+    }
+
+    // NEU: Auswahl löschen
+    public void clearSelectedFurnace(Player player) {
+        selectedFurnace.remove(player);
     }
 }
