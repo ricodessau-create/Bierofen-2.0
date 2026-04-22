@@ -1,7 +1,7 @@
-package de.plugin.furnace;
+package de.bierofen.furnace;
 
-import de.plugin.BierOfen;
-import de.plugin.storage.StorageManager;
+import de.bierofen.BierOfen;
+import de.bierofen.storage.StorageManager;
 import org.bukkit.block.Block;
 
 import java.util.Random;
