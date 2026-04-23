@@ -11,6 +11,8 @@ import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class FurnaceSmeltListener implements Listener {
 
     private boolean isOreOrRaw(Material m) {
@@ -43,8 +45,10 @@ public class FurnaceSmeltListener implements Listener {
         int chance = fm.getBonusChance(level);
         if (chance <= 0) return;
 
-        if (BierOfen.getInstance().getServer().getRandom().nextInt(100) >= chance) return;
+        // Chance prüfen (0–99)
+        if (ThreadLocalRandom.current().nextInt(100) >= chance) return;
 
+        // Extra-Drops: 1–4
         int extra = fm.getBonusDropsAmount();
 
         ItemStack result = e.getResult().clone();
