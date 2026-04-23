@@ -8,7 +8,6 @@ import org.bukkit.block.Furnace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
-import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class FurnaceListener implements Listener {
@@ -23,6 +22,14 @@ public class FurnaceListener implements Listener {
         return type == Material.FURNACE ||
                type == Material.BLAST_FURNACE ||
                type == Material.SMOKER;
+    }
+
+    private boolean isOreOrRaw(Material m) {
+        return m.name().endsWith("_ORE") ||
+               m.name().startsWith("RAW_") ||
+               m == Material.RAW_COPPER ||
+               m == Material.RAW_IRON ||
+               m == Material.RAW_GOLD;
     }
 
     @EventHandler
@@ -46,38 +53,21 @@ public class FurnaceListener implements Listener {
         }
 
         if (type == Material.SMOKER) {
-            if (input.isEdible()) multiplier = 2.0 + speedBonus;
-            else multiplier = 0.5;
+            if (input.isEdible()) {
+                multiplier = 2.0 + speedBonus;
+            } else {
+                multiplier = 0.5; // Debuff bei falscher Befüllung
+            }
         }
 
         if (type == Material.BLAST_FURNACE) {
-            if (isOreOrRaw(input)) multiplier = 2.0 + speedBonus;
-            else multiplier = 0.5;
+            if (isOreOrRaw(input)) {
+                multiplier = 2.0 + speedBonus;
+            } else {
+                multiplier = 0.5; // Debuff bei falscher Befüllung
+            }
         }
 
         e.setBurnTime((int) (e.getBurnTime() * multiplier));
-    }
-
-    @EventHandler
-    public void onSmelt(FurnaceSmeltEvent e) {
-        Block block = e.getBlock();
-        Material type = block.getType();
-
-        if (!isValidFurnace(type)) return;
-
-        int level = manager.getLevel(block);
-        int bonus = manager.getBonusDrops(level);
-
-        if (bonus > 0) {
-            e.setResult(new ItemStack(e.getResult().getType(), 1 + bonus));
-        }
-    }
-
-    private boolean isOreOrRaw(Material m) {
-        return m.name().endsWith("_ORE") ||
-               m.name().startsWith("RAW_") ||
-               m == Material.RAW_COPPER ||
-               m == Material.RAW_IRON ||
-               m == Material.RAW_GOLD;
     }
 }
