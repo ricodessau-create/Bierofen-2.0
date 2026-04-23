@@ -7,6 +7,8 @@ import de.bierofen.listener.UpgradeClickListener;
 import de.bierofen.listener.AdminClickListener;
 import de.bierofen.listener.WikiClickListener;
 import de.bierofen.listener.FurnaceSmeltListener;
+import de.bierofen.listener.FurnaceOpenListener;
+import de.bierofen.listener.FurnaceSelectListener;
 import de.bierofen.storage.StorageManager;
 import de.bierofen.furnace.FurnaceManager;
 
@@ -28,7 +30,6 @@ public class BierOfen extends JavaPlugin {
         instance = this;
 
         saveDefaultConfig();
-
         setupEconomy();
 
         storageManager = new StorageManager(getDataFolder());
@@ -40,10 +41,12 @@ public class BierOfen extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(new GuiClickListener(), this);
         Bukkit.getPluginManager().registerEvents(new FurnaceListener(), this);
+        Bukkit.getPluginManager().registerEvents(new FurnaceSmeltListener(), this);
         Bukkit.getPluginManager().registerEvents(new UpgradeClickListener(), this);
         Bukkit.getPluginManager().registerEvents(new AdminClickListener(), this);
         Bukkit.getPluginManager().registerEvents(new WikiClickListener(), this);
-        Bukkit.getPluginManager().registerEvents(new FurnaceSmeltListener(), this);
+        Bukkit.getPluginManager().registerEvents(new FurnaceOpenListener(), this);
+        Bukkit.getPluginManager().registerEvents(new FurnaceSelectListener(), this);
 
         getLogger().info("BierOfen aktiviert.");
     }
