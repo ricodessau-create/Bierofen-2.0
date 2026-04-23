@@ -45,10 +45,8 @@ public class FurnaceSmeltListener implements Listener {
         int chance = fm.getBonusChance(level);
         if (chance <= 0) return;
 
-        // Chance prüfen (0–99)
         if (ThreadLocalRandom.current().nextInt(100) >= chance) return;
 
-        // Extra-Drops: 1–4
         int extra = fm.getBonusDropsAmount();
 
         ItemStack result = e.getResult().clone();
