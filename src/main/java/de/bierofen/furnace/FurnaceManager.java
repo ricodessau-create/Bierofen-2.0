@@ -27,25 +27,23 @@ public class FurnaceManager {
     }
 
     public boolean isMaxLevel(int level) {
-        int max = plugin.getConfig().getInt("max-level", 5);
+        int max = plugin.getConfig().getInt("settings.max-level", 5);
         return level >= max;
     }
 
-    // SPEED BONUS
+    // SPEED BONUS (in % aus config.levels.speed.X)
     public double getSpeedBonus(int level) {
-        int value = plugin.getConfig().getInt("speed." + level, 0);
+        int value = plugin.getConfig().getInt("levels.speed." + level, 0);
         return value / 100.0;
     }
 
-    // DROP BONUS
-    public int getBonusDrops(int level) {
-        int chance = plugin.getConfig().getInt("drop." + level, 0);
+    // DROP BONUS (Chance in % aus config.levels.drop.X)
+    public int getBonusChance(int level) {
+        return plugin.getConfig().getInt("levels.drop." + level, 0);
+    }
 
-        if (chance == 0) return 0;
-
-        if (rnd.nextInt(100) < chance) {
-            return 1 + rnd.nextInt(4);
-        }
-        return 0;
+    // Anzahl Extra-Drops (1–4)
+    public int getBonusDropsAmount() {
+        return 1 + rnd.nextInt(4);
     }
 }
