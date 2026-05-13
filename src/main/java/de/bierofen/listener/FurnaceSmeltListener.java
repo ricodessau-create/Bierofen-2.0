@@ -17,11 +17,7 @@ public class FurnaceSmeltListener implements Listener {
         this.fm = BierOfen.getInstance().getFurnaceManager();
     }
 
-    /**
-     * SPEED-FIX: Reduziert die Kochzeit (Ticks) anhand des Level-Bonus.
-     * Vanilla-Kochzeit: 200 Ticks (Ofen), 100 Ticks (Blast/Smoker).
-     * Mit 50 % Speed-Bonus → dividiert durch 1,5 → 133 bzw. 67 Ticks.
-     */
+    // Speed-Fix: Kochzeit reduzieren statt Brennzeit erhöhen
     @EventHandler
     public void onStartSmelt(FurnaceStartSmeltEvent e) {
         Block block = e.getBlock();
@@ -33,7 +29,7 @@ public class FurnaceSmeltListener implements Listener {
         e.setTotalCookTime(Math.max(1, reduced));
     }
 
-    /** DROP-BONUS: Zufällige Extra-Drops nach dem Schmelzen. */
+    // Drop-Bonus: Bonus-Amount direkt auf das Result setzen → Trichter greift normal
     @EventHandler
     public void onSmelt(FurnaceSmeltEvent e) {
         Block block = e.getBlock();
@@ -42,9 +38,11 @@ public class FurnaceSmeltListener implements Listener {
         if (chance <= 0) return;
 
         if (Math.random() * 100 < chance) {
-            ItemStack bonus = e.getResult().clone();
-            bonus.setAmount(fm.getBonusDropsAmount());
-            block.getWorld().dropItemNaturally(block.getLocation().add(0.5, 1, 0.5), bonus);
+            int bonusAmount = fm.getBonusDropsAmount();
+            ItemStack result = e.getResult().clone();
+            // Bonus auf bestehende Menge draufrechnen, nicht neu droppen
+            result.setAmount(result.getAmount() + bonusAmount);
+            e.setResult(result);
         }
     }
 }
