@@ -2,7 +2,9 @@ package de.bierofen.furnace;
 
 import de.bierofen.BierOfen;
 import de.bierofen.storage.StorageManager;
+import de.bierofen.util.StarUtil;
 import org.bukkit.block.Block;
+import org.bukkit.block.Furnace;
 
 import java.util.Random;
 
@@ -24,25 +26,35 @@ public class FurnaceManager {
 
     public void setLevel(Block block, int level) {
         storage.setLevel(block, level);
+        applyCustomName(block, level);   // <-- NEU: Sterne am Block setzen
     }
 
+    /** Setzt den sichtbaren Ofennamen (Sterne) direkt am Block-Entity. */
+    public void applyCustomName(Block block, int level) {
+        if (block.getState() instanceof Furnace furnace) {
+            furnace.setCustomName(StarUtil.getFurnaceName(level, block.getType()));
+            furnace.update();
+        }
+    }
+
+    // MAX-LEVEL
     public boolean isMaxLevel(int level) {
         int max = plugin.getConfig().getInt("settings.max-level", 5);
         return level >= max;
     }
 
-    // SPEED BONUS (in % aus config.levels.speed.X)
+    // SPEED BONUS  (Dezimalwert, z. B. 0,5 für 50 %)
     public double getSpeedBonus(int level) {
         int value = plugin.getConfig().getInt("levels.speed." + level, 0);
         return value / 100.0;
     }
 
-    // DROP BONUS (Chance in % aus config.levels.drop.X)
+    // DROP BONUS (Chance in %)
     public int getBonusChance(int level) {
         return plugin.getConfig().getInt("levels.drop." + level, 0);
     }
 
-    // Anzahl Extra-Drops (1–4)
+    // Extra-Drops (1–4)
     public int getBonusDropsAmount() {
         return 1 + rnd.nextInt(4);
     }
