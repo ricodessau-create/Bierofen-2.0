@@ -25,8 +25,14 @@ public class FurnaceOpenListener implements Listener {
 
         Block block = furnace.getBlock();
         int level = fm.getLevel(block);
+        String title = StarUtil.getFurnaceName(level, block.getType());
 
-        String stars = StarUtil.getStars(level);
-        e.getView().setTitle(stars + " BierOfen");
+        // Titel sofort im Inventar-Packet setzen (Paper 1.20+)
+        e.getView().setTitle(title);
+
+        // customName nachziehen, falls Ofen noch keinen hat (alte DB-Einträge)
+        if (furnace.getCustomName() == null) {
+            fm.applyCustomName(block, level);
+        }
     }
 }
