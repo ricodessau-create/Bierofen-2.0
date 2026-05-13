@@ -2,56 +2,49 @@ package de.bierofen.listener;
 
 import de.bierofen.BierOfen;
 import de.bierofen.furnace.FurnaceManager;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.Furnace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
-import org.bukkit.inventory.FurnaceInventory;
+import org.bukkit.event.inventory.FurnaceStartSmeltEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.concurrent.ThreadLocalRandom;
 
 public class FurnaceSmeltListener implements Listener {
 
-    private boolean isOreOrRaw(Material m) {
-        return m.name().endsWith("_ORE") ||
-               m.name().startsWith("RAW_") ||
-               m == Material.RAW_COPPER ||
-               m == Material.RAW_IRON ||
-               m == Material.RAW_GOLD;
+    private final FurnaceManager fm;
+
+    public FurnaceSmeltListener() {
+        this.fm = BierOfen.getInstance().getFurnaceManager();
     }
 
+    /**
+     * SPEED-FIX: Reduziert die Kochzeit (Ticks) anhand des Level-Bonus.
+     * Vanilla-Kochzeit: 200 Ticks (Ofen), 100 Ticks (Blast/Smoker).
+     * Mit 50 % Speed-Bonus → dividiert durch 1,5 → 133 bzw. 67 Ticks.
+     */
+    @EventHandler
+    public void onStartSmelt(FurnaceStartSmeltEvent e) {
+        Block block = e.getBlock();
+        int level = fm.getLevel(block);
+        double speedBonus = fm.getSpeedBonus(level);
+        if (speedBonus <= 0) return;
+
+        int reduced = (int) (e.getTotalCookTime() / (1.0 + speedBonus));
+        e.setTotalCookTime(Math.max(1, reduced));
+    }
+
+    /** DROP-BONUS: Zufällige Extra-Drops nach dem Schmelzen. */
     @EventHandler
     public void onSmelt(FurnaceSmeltEvent e) {
-
         Block block = e.getBlock();
-
-        if (!(block.getState() instanceof Furnace furnace)) {
-            return;
-        }
-
-        FurnaceInventory inv = furnace.getInventory();
-
-        FurnaceManager fm = BierOfen.getInstance().getFurnaceManager();
         int level = fm.getLevel(block);
-
-        if (level <= 1) return;
-
-        Material input = inv.getSmelting() != null ? inv.getSmelting().getType() : Material.AIR;
-        if (!isOreOrRaw(input)) return;
-
         int chance = fm.getBonusChance(level);
         if (chance <= 0) return;
 
-        if (ThreadLocalRandom.current().nextInt(100) >= chance) return;
-
-        int extra = fm.getBonusDropsAmount();
-
-        ItemStack result = e.getResult().clone();
-        result.setAmount(extra);
-
-        inv.addItem(result);
+        if (Math.random() * 100 < chance) {
+            ItemStack bonus = e.getResult().clone();
+            bonus.setAmount(fm.getBonusDropsAmount());
+            block.getWorld().dropItemNaturally(block.getLocation().add(0.5, 1, 0.5), bonus);
+        }
     }
 }
