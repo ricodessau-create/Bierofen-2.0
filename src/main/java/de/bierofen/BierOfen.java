@@ -14,6 +14,12 @@ import de.bierofen.furnace.FurnaceManager;
 
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.BlastingRecipe;
+import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -35,6 +41,8 @@ public class BierOfen extends JavaPlugin {
         storageManager = new StorageManager(getDataFolder());
         furnaceManager = new FurnaceManager(storageManager);
 
+        registerRawBlockRecipes();
+
         getCommand("bierofen").setExecutor(new BierOfenCommand());
         getCommand("bieradmin").setExecutor(new BierOfenCommand());
         getCommand("bierwiki").setExecutor(new BierOfenCommand());
@@ -49,6 +57,27 @@ public class BierOfen extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new FurnaceSelectListener(), this);
 
         getLogger().info("BierOfen aktiviert.");
+    }
+
+    private void registerRawBlockRecipes() {
+        addBlastAndFurnaceRecipe("raw_copper_block_smelt", Material.RAW_COPPER_BLOCK, Material.COPPER_BLOCK, 0.7f, 200);
+        addBlastAndFurnaceRecipe("raw_iron_block_smelt",   Material.RAW_IRON_BLOCK,   Material.IRON_BLOCK,   0.7f, 200);
+        addBlastAndFurnaceRecipe("raw_gold_block_smelt",   Material.RAW_GOLD_BLOCK,   Material.GOLD_BLOCK,   0.7f, 200);
+    }
+
+    private void addBlastAndFurnaceRecipe(String keyBase, Material input, Material output, float xp, int cookTime) {
+        ItemStack result = new ItemStack(output);
+        RecipeChoice choice = new RecipeChoice.MaterialChoice(input);
+
+        BlastingRecipe blast = new BlastingRecipe(
+                new NamespacedKey(this, keyBase + "_blast"), result, choice, xp, cookTime / 2
+        );
+        FurnaceRecipe furnace = new FurnaceRecipe(
+                new NamespacedKey(this, keyBase + "_furnace"), result, choice, xp, cookTime
+        );
+
+        Bukkit.addRecipe(blast);
+        Bukkit.addRecipe(furnace);
     }
 
     @Override
